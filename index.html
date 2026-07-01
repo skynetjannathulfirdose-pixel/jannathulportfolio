@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jannathul Firdose | Portfolio</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+:root {
+  --green: #0099ff;
+  --green-dim: #0066cc;
+  --green-dark: #002966;
+  --bg: #000000;
+  --panel: #030508;
+  --text: #a0d4ff;
+  --glow: 0 0 8px #0099ff, 0 0 20px #0099ff88;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  overflow-x: hidden;
+}
+
+#matrix-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,153,255,0.03) 2px,
+    rgba(0,153,255,0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.site-wrapper { position: relative; z-index: 2; }
+
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 40px;
+  background: rgba(0,0,0,0.85);
+  border-bottom: 1px solid var(--green-dark);
+  backdrop-filter: blur(6px);
+  z-index: 100;
+}
+
+.nav-logo {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  color: var(--green);
+  text-shadow: var(--glow);
+  letter-spacing: 3px;
+}
+
+.nav-links a {
+  color: var(--text);
+  text-decoration: none;
+  margin-left: 28px;
+  font-size: 0.78rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: color 0.2s, text-shadow 0.2s;
+}
+.nav-links a:hover { color: var(--green); text-shadow: var(--glow); }
+
+#hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 80px 20px 40px;
+}
+
+.hero-tag {
+  font-size: 0.72rem;
+  letter-spacing: 4px;
+  color: var(--green-dim);
+  margin-bottom: 20px;
+  animation: fadeIn 1s ease 0.5s both;
+}
+
+.hero-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(2rem, 6vw, 4.2rem);
+  font-weight: 900;
+  color: var(--green);
+  text-shadow: var(--glow);
+  letter-spacing: 4px;
+  line-height: 1.1;
+  animation: glitchReveal 1.2s ease 0.8s both;
+}
+
+.hero-sub {
+  font-size: clamp(0.85rem, 2.5vw, 1.1rem);
+  color: var(--text);
+  margin-top: 16px;
+  letter-spacing: 2px;
+  animation: fadeIn 1s ease 1.4s both;
+}
+
+.typing-wrap {
+  margin-top: 30px;
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  color: var(--green);
+  text-shadow: 0 0 6px #0099ff;
+  min-height: 1.5em;
+  animation: fadeIn 1s ease 1.8s both;
+}
+
+.cursor {
+  display: inline-block;
+  width: 10px;
+  height: 1.1em;
+  background: var(--green);
+  margin-left: 3px;
+  vertical-align: text-bottom;
+  animation: blink 0.75s step-end infinite;
+}
+
+.hero-cta {
+  margin-top: 44px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  animation: fadeIn 1s ease 2.2s both;
+}
+
+.btn {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.82rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 12px 28px;
+  border: 1px solid var(--green);
+  color: var(--green);
+  background: transparent;
+  cursor: pointer;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.3s;
+}
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--green);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+  z-index: -1;
+}
+.btn:hover { color: #000; text-shadow: none; }
+.btn:hover::before { transform: scaleX(1); }
+
+section {
+  padding: 90px 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-size: 0.7rem;
+  letter-spacing: 5px;
+  color: var(--green-dim);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.section-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+  font-weight: 700;
+  color: var(--green);
+  text-shadow: 0 0 10px #0099ff66;
+  margin-bottom: 40px;
+  position: relative;
+  display: inline-block;
+}
+.section-title::after {
+  content: '';
+  display: block;
+  margin-top: 10px;
+  height: 2px;
+  width: 60px;
+  background: var(--green);
+  box-shadow: var(--glow);
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+@media (max-width: 620px) { .about-grid { grid-template-columns: 1fr; } }
+
+.about-card {
+  background: var(--panel);
+  border: 1px solid var(--green-dark);
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.about-card:hover { border-color: var(--green); box-shadow: 0 0 20px #0099ff22; }
+.about-card::before {
+  content: attr(data-id);
+  position: absolute;
+  top: 10px; right: 14px;
+  font-size: 0.65rem;
+  color: var(--green-dark);
+  letter-spacing: 2px;
+}
+
+.card-title {
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  color: var(--green-dim);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.card-body { font-size: 0.9rem; line-height: 1.75; color: var(--text); }
+.highlight { color: var(--green); text-shadow: 0 0 5px #0099ff55; }
+
+#stats {
+  background: var(--panel);
+  border-top: 1px solid var(--green-dark);
+  border-bottom: 1px solid var(--green-dark);
+  padding: 60px 20px;
+  max-width: 100%;
+}
+
+.stats-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 32px;
+  text-align: center;
+}
+
+.stat-item { min-width: 140px; }
+
+.stat-num {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 900;
+  color: var(--green);
+  text-shadow: var(--glow);
+  display: block;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  letter-spacing: 3px;
+  color: var(--text);
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+
+.interests-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.interest-card {
+  border: 1px solid var(--green-dark);
+  padding: 24px 20px;
+  text-align: center;
+  transition: all 0.3s;
+  position: relative;
+  background: var(--panel);
+  cursor: default;
+}
+.interest-card:hover {
+  border-color: var(--green);
+  box-shadow: 0 0 24px #0099ff33;
+  transform: translateY(-4px);
+}
+
+.interest-icon {
+  font-size: 2.2rem;
+  margin-bottom: 14px;
+  display: block;
+  filter: drop-shadow(0 0 6px #0099ff88);
+}
+
+.interest-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.78rem;
+  color: var(--green);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.interest-desc { font-size: 0.78rem; color: var(--text); margin-top: 8px; line-height: 1.6; }
+
+.timeline { position: relative; padding-left: 30px; }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--green), transparent);
+}
+
+.tl-item { position: relative; margin-bottom: 40px; }
+.tl-item::before {
+  content: '';
+  position: absolute;
+  left: -34px; top: 4px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: var(--glow);
+}
+
+.tl-year { font-size: 0.68rem; color: var(--green-dim); letter-spacing: 3px; margin-bottom: 6px; }
+.tl-title { font-family: 'Orbitron', sans-serif; font-size: 0.95rem; color: var(--green); margin-bottom: 8px; }
+.tl-desc { font-size: 0.87rem; color: var(--text); line-height: 1.7; }
+
+.vision-box {
+  border: 1px solid var(--green);
+  padding: 48px 36px;
+  text-align: center;
+  position: relative;
+  background: var(--panel);
+  box-shadow: 0 0 40px #0099ff11;
+}
+.vision-box::before, .vision-box::after {
+  content: '//';
+  position: absolute;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3rem;
+  color: #0099ff1a;
+}
+.vision-box::before { top: 14px; left: 20px; }
+.vision-box::after  { bottom: 14px; right: 20px; }
+
+.vision-quote {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  color: var(--green);
+  text-shadow: 0 0 12px #0099ff66;
+  line-height: 1.6;
+  font-weight: 700;
+}
+.vision-attr { margin-top: 20px; font-size: 0.75rem; letter-spacing: 3px; color: var(--green-dim); text-transform: uppercase; }
+
+.project-card {
+  border: 1px solid var(--green);
+  padding: 36px;
+  background: var(--panel);
+  box-shadow: 0 0 30px #0099ff22;
+  position: relative;
+}
+
+.project-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #000;
+  background: var(--green);
+  padding: 4px 12px;
+  margin-bottom: 20px;
+}
+
+.project-title { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; color: var(--green); text-shadow: var(--glow); margin-bottom: 16px; }
+.project-desc { font-size: 0.9rem; color: var(--text); line-height: 1.8; }
+
+.project-tech { margin-top: 24px; display: flex; gap: 10px; flex-wrap: wrap; }
+
+.tech-tag {
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border: 1px solid var(--green-dark);
+  color: var(--green-dim);
+  padding: 5px 12px;
+  transition: all 0.25s;
+}
+.tech-tag:hover { border-color: var(--green); color: var(--green); box-shadow: 0 0 8px #0099ff44; }
+
+footer {
+  border-top: 1px solid var(--green-dark);
+  padding: 36px 20px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--green-dark);
+  letter-spacing: 2px;
+}
+footer span { color: var(--green-dim); }
+
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes glitchReveal {
+  0%   { opacity: 0; clip-path: inset(100% 0 0 0); }
+  40%  { opacity: 1; clip-path: inset(0 0 0 0); }
+  42%  { clip-path: inset(5% 0 90% 0); }
+  44%  { clip-path: inset(0 0 0 0); }
+  100% { opacity: 1; clip-path: inset(0 0 0 0); }
+}
+
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+.scroll-hint {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.68rem;
+  letter-spacing: 3px;
+  color: var(--green-dim);
+  text-transform: uppercase;
+  animation: bounce 2s infinite;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(8px); }
+}
+
+.glitch-hover { position: relative; display: inline-block; }
+.glitch-hover:hover { animation: glitch 0.4s steps(2) infinite; }
+@keyframes glitch {
+  0%   { text-shadow: 2px 0 red, -2px 0 cyan; }
+  25%  { text-shadow: -2px 0 red, 2px 0 cyan; }
+  50%  { text-shadow: 2px 0 cyan, -2px 0 red; }
+  75%  { text-shadow: 0 0 var(--green); }
+  100% { text-shadow: var(--glow); }
+}
+  </style>
+</head>
+<body>
+<canvas id="matrix-canvas"></canvas>
+
+<div class="site-wrapper">
+  <nav>
+    <div class="nav-logo">JF_PORTFOLIO</div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#interests">Interests</a>
+      <a href="#milestones">Journey</a>
+      <a href="#project">Projects</a>
+    </div>
+  </nav>
+
+  <section id="hero" style="position:relative; max-width:100%;">
+    <p class="hero-tag">&gt; INITIALIZING PORTFOLIO . . . ACCESS GRANTED</p>
+    <h1 class="hero-name glitch-hover">JANNATHUL<br>FIRDOSE</h1>
+    <p class="hero-sub">BSc Artificial Intelligence &amp; Data Science &nbsp;|&nbsp; Year 1</p>
+    <div class="typing-wrap">
+      <span id="typing-text"></span><span class="cursor"></span>
+    </div>
+    <div class="hero-cta">
+      <a href="#about" class="btn">Explore Profile</a>
+      <a href="#project" class="btn">View Projects</a>
+    </div>
+    <div class="scroll-hint">↓ Scroll Down</div>
+  </section>
+
+  <div id="stats">
+    <div class="stats-inner">
+      <div class="stat-item reveal">
+        <span class="stat-num" data-target="242">0</span>
+        <div class="stat-label">12th Std Score</div>
+      </div>
+      <div class="stat-item reveal">
+        <span class="stat-num" data-target="1">0</span>
+        <div class="stat-label">Year of Study</div>
+      </div>
+      <div class="stat-item reveal">
+        <span class="stat-num" data-target="1">0</span>
+        <div class="stat-label">AI-Powered Project</div>
+      </div>
+      <div class="stat-item reveal">
+        <span class="stat-num" data-target="100">0</span>
+        <div class="stat-label">% Dedication</div>
+      </div>
+    </div>
+  </div>
+
+  <section id="about">
+    <div class="reveal">
+      <p class="section-label">&gt; PROFILE_DATA.json</p>
+      <h2 class="section-title">About Me</h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-card reveal" data-id="[01]">
+        <p class="card-title">Identity</p>
+        <p class="card-body">I'm <span class="highlight">Jannathul Firdose</span>, a first-year student pursuing <span class="highlight">BSc in Artificial Intelligence &amp; Data Science</span>. My journey into tech is just beginning — and the destination is the summit.</p>
+      </div>
+      <div class="about-card reveal" data-id="[02]">
+        <p class="card-title">Academic Record</p>
+        <p class="card-body">Scored <span class="highlight">242 marks</span> in my 12th standard board exams, a reflection of the focus and discipline I bring to every challenge I face.</p>
+      </div>
+      <div class="about-card reveal" data-id="[03]">
+        <p class="card-title">Mindset</p>
+        <p class="card-body">Deeply <span class="highlight">enthusiastic about learning technology</span>. I believe that curiosity is the most powerful algorithm — and I run it every single day.</p>
+      </div>
+      <div class="about-card reveal" data-id="[04]">
+        <p class="card-title">Passion Areas</p>
+        <p class="card-body"><span class="highlight">Programming &amp; Mathematics</span> are not just subjects for me — they're tools to decode the universe. Logic, patterns, and problem-solving light me up.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="interests">
+    <div class="reveal">
+      <p class="section-label">&gt; CORE_MODULES.list</p>
+      <h2 class="section-title">Interests</h2>
+    </div>
+    <div class="interests-grid">
+      <div class="interest-card reveal">
+        <span class="interest-icon">🤖</span>
+        <div class="interest-name">Artificial Intelligence</div>
+        <p class="interest-desc">Exploring how machines can learn, reason, and solve real-world problems.</p>
+      </div>
+      <div class="interest-card reveal">
+        <span class="interest-icon">📊</span>
+        <div class="interest-name">Data Science</div>
+        <p class="interest-desc">Turning raw numbers into insights that drive impactful decisions.</p>
+      </div>
+      <div class="interest-card reveal">
+        <span class="interest-icon">💻</span>
+        <div class="interest-name">Programming</div>
+        <p class="interest-desc">Writing code is writing thoughts into reality — and I love every line of it.</p>
+      </div>
+      <div class="interest-card reveal">
+        <span class="interest-icon">∑</span>
+        <div class="interest-name">Mathematics</div>
+        <p class="interest-desc">The language underneath everything — algebra, logic, and calculus fascinate me.</p>
+      </div>
+      <div class="interest-card reveal">
+        <span class="interest-icon">🚀</span>
+        <div class="interest-name">Innovation</div>
+        <p class="interest-desc">Building things that didn't exist before — technology changing lives.</p>
+      </div>
+      <div class="interest-card reveal">
+        <span class="interest-icon">🌐</span>
+        <div class="interest-name">Web Development</div>
+        <p class="interest-desc">Crafting digital experiences from scratch — one line of HTML at a time.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="milestones">
+    <div class="reveal">
+      <p class="section-label">&gt; JOURNEY_LOG.timeline</p>
+      <h2 class="section-title">My Journey</h2>
+    </div>
+    <div class="timeline">
+      <div class="tl-item reveal">
+        <p class="tl-year">CHAPTER 01 &nbsp;|&nbsp; SCHOOL YEARS</p>
+        <h3 class="tl-title">Discovered the Love for Math &amp; Logic</h3>
+        <p class="tl-desc">My passion for problem-solving and logical thinking sparked during school — mathematics became my favourite subject, laying the foundation for everything ahead.</p>
+      </div>
+      <div class="tl-item reveal">
+        <p class="tl-year">CHAPTER 02 &nbsp;|&nbsp; 12TH STANDARD</p>
+        <h3 class="tl-title">Secured 242 Marks in Board Exams</h3>
+        <p class="tl-desc">Through dedicated effort and consistent discipline, I achieved 242 marks in my 12th standard exams — a milestone that opened the door to the world of AI and technology.</p>
+      </div>
+      <div class="tl-item reveal">
+        <p class="tl-year">CHAPTER 03 &nbsp;|&nbsp; PRESENT</p>
+        <h3 class="tl-title">BSc AI &amp; Data Science — Year 1</h3>
+        <p class="tl-desc">Now building the foundations of my tech career — studying AI, Data Science, programming, and mathematics at university level. Every day is a new module to crack.</p>
+      </div>
+      <div class="tl-item reveal">
+        <p class="tl-year">CHAPTER 04 &nbsp;|&nbsp; FIRST BUILD</p>
+        <h3 class="tl-title">Built First AI-Assisted Portfolio Website</h3>
+        <p class="tl-desc">This very website is my <span class="highlight">first-ever project</span> — built using AI assistance. A proof of concept that even beginners can create meaningful things by leveraging the right tools and the willingness to learn.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="vision" style="padding-top: 0;">
+    <div class="vision-box reveal">
+      <p class="vision-quote">
+        "I want to build things that change the world — <br>
+        just like Elon Musk showed that one person's bold vision <br>
+        can redefine what's possible for all of humanity."
+      </p>
+      <p class="vision-attr">— Jannathul Firdose &nbsp;|&nbsp; Vision Statement</p>
+    </div>
+  </section>
+
+  <section id="project">
+    <div class="reveal">
+      <p class="section-label">&gt; PROJECTS.exe</p>
+      <h2 class="section-title">Projects</h2>
+    </div>
+    <div class="project-card reveal">
+      <span class="project-badge">✦ First Project</span>
+      <h3 class="project-title">AI-Assisted Portfolio Website</h3>
+      <p class="project-desc">
+        This portfolio is my very first project — and it's powered by Artificial Intelligence.
+        As a first-year student with no prior web development experience, I collaborated with
+        an AI (Claude by Anthropic) to design and build this entire website in a single
+        <span class="highlight">index.html</span> file.
+        <br><br>
+        It represents the beginning of my tech journey: proof that curiosity, willingness to
+        learn, and the right tools can produce something real — even on day one.
+      </p>
+      <div class="project-tech">
+        <span class="tech-tag">HTML5</span>
+        <span class="tech-tag">CSS3</span>
+        <span class="tech-tag">JavaScript</span>
+        <span class="tech-tag">Claude AI</span>
+        <span class="tech-tag">Matrix Animation</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 &nbsp;<span>Jannathul Firdose</span> &nbsp;|&nbsp; BSc AI &amp; DS, Year 1</p>
+    <p style="margin-top:10px;">&gt; Portfolio crafted with AI assistance &nbsp;|&nbsp; First project, endless ambition.</p>
+  </footer>
+</div>
+
+<script>
+  /* MATRIX RAIN */
+  (function () {
+    const canvas = document.getElementById('matrix-canvas');
+    const ctx = canvas.getContext('2d');
+    let cols, drops;
+    function resize() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+      cols  = Math.floor(canvas.width / 18);
+      drops = Array(cols).fill(1);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF<>{}[]#$%';
+    function draw() {
+      ctx.fillStyle = 'rgba(0,0,0,0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = '15px Share Tech Mono, monospace';
+      for (let i = 0; i < drops.length; i++) {
+        const ch = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillStyle = Math.random() > 0.95 ? '#ffffff' : '#0099ff';
+        ctx.fillText(ch, i * 18, drops[i] * 18);
+        if (drops[i] * 18 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+    }
+    setInterval(draw, 50);
+  })();
+
+  /* TYPING EFFECT */
+  (function () {
+    const phrases = [
+      'Tech Enthusiast & AI Explorer',
+      'Future Innovator',
+      'Math & Programming Lover',
+      'First-Year BSc AI DS Student',
+      'Inspired by Elon Musk',
+      'Building the Future, One Line at a Time'
+    ];
+    let pi = 0, ci = 0, deleting = false;
+    const el = document.getElementById('typing-text');
+    function type() {
+      const current = phrases[pi];
+      if (deleting) {
+        el.textContent = current.substring(0, ci--);
+        if (ci < 0) { deleting = false; pi = (pi + 1) % phrases.length; setTimeout(type, 500); return; }
+        setTimeout(type, 40);
+      } else {
+        el.textContent = current.substring(0, ci++);
+        if (ci > current.length) { deleting = true; setTimeout(type, 1800); return; }
+        setTimeout(type, 80);
+      }
+    }
+    setTimeout(type, 2500);
+  })();
+
+  /* SCROLL REVEAL */
+  (function () {
+    const els = document.querySelectorAll('.reveal');
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.12 });
+    els.forEach(el => obs.observe(el));
+  })();
+
+  /* COUNT-UP STATS */
+  (function () {
+    const nums = document.querySelectorAll('.stat-num[data-target]');
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const el = e.target;
+        const target = +el.dataset.target;
+        const duration = 1600;
+        const step = Math.ceil(target / (duration / 30));
+        let current = 0;
+        const timer = setInterval(() => {
+          current = Math.min(current + step, target);
+          el.textContent = current;
+          if (current >= target) clearInterval(timer);
+        }, 30);
+        obs.unobserve(el);
+      });
+    }, { threshold: 0.5 });
+    nums.forEach(n => obs.observe(n));
+  })();
+</script>
+</body>
+</html>
